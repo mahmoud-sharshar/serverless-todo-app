@@ -22,3 +22,15 @@ export const createNewTodo = (
     createdAt: new Date().toISOString()
   })
 }
+
+export const deleteTodo = async (userId: string, todoId: string) => {
+  if (!(await isTodoExist(userId, todoId)))
+    throw new Error("Requested todo doesn't exist")
+
+  return todosAcess.deleteTodo(userId, todoId)
+}
+
+export const isTodoExist = async (userId: string, todoId: string) => {
+  const item: TodoItem = await todosAcess.getTodo(userId, todoId)
+  return !!item
+}

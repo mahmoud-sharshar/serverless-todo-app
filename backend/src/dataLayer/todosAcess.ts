@@ -8,6 +8,19 @@ export class TodosAccess {
     private readonly todosTable = process.env.TODOS_TABLE
   ) {}
 
+  async getTodo(userId: string, todoId: string): Promise<TodoItem> {
+    const result = await this.docClient
+      .get({
+        TableName: this.todosTable,
+        Key: {
+          userId,
+          todoId
+        }
+      })
+      .promise()
+    return result.Item as TodoItem
+  }
+
   async getTodosForUser(userId: string): Promise<TodoItem[]> {
     const result: any = await this.docClient
       .query({
@@ -29,5 +42,17 @@ export class TodosAccess {
       })
       .promise()
     return newItem
+  }
+
+  async deleteTodo(userId: string, todoId: string) {
+    await this.docClient
+      .delete({
+        TableName: this.todosTable,
+        Key: {
+          userId,
+          todoId
+        }
+      })
+      .promise()
   }
 }

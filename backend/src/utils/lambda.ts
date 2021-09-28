@@ -1,10 +1,12 @@
 import * as middy from 'middy'
-import { cors } from 'middy/middlewares'
+import { cors, httpErrorHandler } from 'middy/middlewares'
 
 export const middyfy = (handler) => {
-  return middy(handler).use(
-    cors({
-      credentials: true
-    })
-  )
+  return middy(handler)
+    .use(httpErrorHandler())
+    .use(
+      cors({
+        credentials: true
+      })
+    )
 }
