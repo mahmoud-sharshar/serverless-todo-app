@@ -11,8 +11,8 @@ import { middyfy } from '../../utils/lambda'
 export const handler = middyfy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const userId = getUserId(event)
-    const todos = await getuserTodos(userId)
+    const items = await getuserTodos(userId)
 
-    return formatJSONResponse(200, { todos })
+    return formatJSONResponse(200, { items })
   }
 )
