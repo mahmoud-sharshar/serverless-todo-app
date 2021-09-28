@@ -3,16 +3,14 @@ import * as AWSXRay from 'aws-xray-sdk'
 
 const XAWS = AWSXRay.captureAWS(AWS)
 
-let options: any = {
-  region: process.env.DB_REGION
-}
-
-if (process.env.IS_OFFLINE) {
-  options = {
-    region: 'localhost',
-    endpoint: 'http://localhost:8000'
+export const createDynamoDBClient = () => {
+  if (process.env.IS_OFFLINE) {
+    console.log('Creating a local DynamoDB instance')
+    return new XAWS.DynamoDB.DocumentClient({
+      region: 'localhost',
+      endpoint: 'http://localhost:8000'
+    })
   }
-}
 
-export const dynamodb = new XAWS.DynamoDB(options)
-export const docClient = new XAWS.DynamoDB.DocumentClient(options)
+  return new XAWS.DynamoDB.DocumentClient()
+}
