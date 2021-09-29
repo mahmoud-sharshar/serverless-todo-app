@@ -2,6 +2,7 @@ import { TodosAccess } from '../dataLayer/todosAcess'
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import * as uuid from 'uuid'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 
 const todosAcess = new TodosAccess()
 export const getuserTodos = (userId: string): Promise<TodoItem[]> => {
@@ -28,6 +29,12 @@ export const deleteTodo = async (userId: string, todoId: string) => {
     throw new Error("Requested todo doesn't exist")
 
   return todosAcess.deleteTodo(userId, todoId)
+}
+
+export const updateTodo = async (userId: string, todoId: string, todoRequest: UpdateTodoRequest){
+  if (!(await isTodoExist(userId, todoId)))
+    throw new Error("Requested todo doesn't exist")
+  return todosAcess.updateTodo(userId, todoId, todoRequest)
 }
 
 export const isTodoExist = async (userId: string, todoId: string) => {
