@@ -9,7 +9,6 @@ import { middyfy } from '../../utils/lambda'
 export const handler = middyfy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
-    // TODO: Remove a TODO item by id
     const userId = getUserId(event)
     try {
       await deleteTodo(userId, todoId)

@@ -12,7 +12,6 @@ import { middyfy } from '../../utils/lambda'
 export const handler = middyfy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
-    // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
     const userId = getUserId(event)
     if (!isTodoExist(userId, todoId))
       return formatJSONResponse(404, { message: 'Todo item is not found' })
