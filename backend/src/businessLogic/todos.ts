@@ -3,6 +3,7 @@ import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import * as uuid from 'uuid'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
+import { generateSignedUrl } from '../helpers/attachmentUtils'
 
 const todosAcess = new TodosAccess()
 export const getuserTodos = (userId: string): Promise<TodoItem[]> => {
@@ -40,4 +41,12 @@ export const updateTodo = async (userId: string, todoId: string, todoRequest: Up
 export const isTodoExist = async (userId: string, todoId: string) => {
   const item: TodoItem = await todosAcess.getTodo(userId, todoId)
   return !!item
+}
+
+export const generateTodoAttachmentUrl = async(userId: string,todoId: string) => {
+  const uploadUrl = generateSignedUrl(todoId)
+  const bucketName = process.env.ATTACHMENT_S3_BUCKET
+  const imageUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
+  await todosAcess.addAttachmentUrl(userId, todoId, imageUrl)
+  return uploadUrl
 }

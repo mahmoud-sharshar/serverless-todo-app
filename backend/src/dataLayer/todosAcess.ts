@@ -84,4 +84,24 @@ export class TodosAccess {
       })
       .promise()
   }
+
+  async addAttachmentUrl(
+    userId: string,
+    todoId: string,
+    attachmentUrl: string
+  ) {
+    await this.docClient
+      .update({
+        TableName: this.todosTable,
+        Key: {
+          userId,
+          todoId
+        },
+        UpdateExpression: 'set attachmentUrl = :url',
+        ExpressionAttributeValues: {
+          ':url': attachmentUrl
+        }
+      })
+      .promise()
+  }
 }
