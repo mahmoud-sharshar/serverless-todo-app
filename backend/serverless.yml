@@ -1,5 +1,5 @@
-org: mahmoud-sharshar
-# app: serverless-todo-app
+org: mahmoudsharshar
+app: serverless-todo-app
 service: serverless-todo-app
 
 plugins:
@@ -12,7 +12,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs14.x
+  runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
 
   stage: ${opt:stage, 'dev'}
@@ -26,10 +26,10 @@ provider:
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
-    TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
+    TODOS_CREATED_AT_INDEX: CreatedAtIndex-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: todos-attachments-bucket-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    _X_AMZN_TRACE_ID: '2021'
+    # _X_AMZN_TRACE_ID: '2021'
 
   logs:
     # Enable API Gateway logs
@@ -43,6 +43,12 @@ provider:
             - xray:PutTelemetryRecords
             - xray:PutTraceSegments
           Resource: '*'
+
+        - Effect: Allow
+          Action:
+            - codedeploy:*
+          Resource:
+            - '*'
 
 functions:
   Auth:
@@ -137,6 +143,10 @@ functions:
         Action:
           - s3:PutObject
         Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*'
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
 resources:
   Resources:
@@ -184,7 +194,7 @@ resources:
 
     # TODO: Complete the bucket properties below.
     # Do not forget to add the CorsConfiguration propoerty
-    AttachmentsBucket:
+    TodosAttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: '${self:provider.environment.ATTACHMENT_S3_BUCKET}'
@@ -217,7 +227,7 @@ resources:
               Principal: '*'
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*'
-        Bucket: !Ref AttachmentsBucket
+        Bucket: !Ref TodosAttachmentsBucket
 
 custom:
   serverless-offline:

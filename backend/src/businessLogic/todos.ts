@@ -32,7 +32,11 @@ export const deleteTodo = async (userId: string, todoId: string) => {
   return todosAcess.deleteTodo(userId, todoId)
 }
 
-export const updateTodo = async (userId: string, todoId: string, todoRequest: UpdateTodoRequest){
+export const updateTodo = async (
+  userId: string,
+  todoId: string,
+  todoRequest: UpdateTodoRequest
+) => {
   if (!(await isTodoExist(userId, todoId)))
     throw new Error("Requested todo doesn't exist")
   return todosAcess.updateTodo(userId, todoId, todoRequest)
@@ -43,7 +47,10 @@ export const isTodoExist = async (userId: string, todoId: string) => {
   return !!item
 }
 
-export const generateTodoAttachmentUrl = async(userId: string,todoId: string) => {
+export const generateTodoAttachmentUrl = async (
+  userId: string,
+  todoId: string
+) => {
   const uploadUrl = generateSignedUrl(todoId)
   const bucketName = process.env.ATTACHMENT_S3_BUCKET
   const imageUrl = `https://${bucketName}.s3.amazonaws.com/${todoId}`
