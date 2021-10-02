@@ -13,7 +13,7 @@ export const handler = middyfy(
   async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const todoId = event.pathParameters.todoId
     const userId = getUserId(event)
-    if (!isTodoExist(userId, todoId))
+    if (!(await isTodoExist(userId, todoId)))
       return formatJSONResponse(404, { message: 'Todo item is not found' })
     const uploadUrl = await generateTodoAttachmentUrl(userId, todoId)
     return formatJSONResponse(200, { uploadUrl })
