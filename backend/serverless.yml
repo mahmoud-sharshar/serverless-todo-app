@@ -10,6 +10,9 @@ plugins:
   - serverless-s3-local
   - serverless-offline
 
+package: 
+  individually: true
+
 provider:
   name: aws
   runtime: nodejs12.x
